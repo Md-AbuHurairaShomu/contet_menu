@@ -1,1 +1,62 @@
+import 'package:flutter/material.dart';
 
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: HomeScreen(),
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Shomu-Context Menu'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            _showContextMenu(context);
+          },
+          child: Text('Click Context Menu'),
+        ),
+      ),
+    );
+  }
+
+  void _showContextMenu(BuildContext context) {
+    final RenderBox overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
+
+    final List<String> options = ['Login', 'Registration', 'Logout'];
+
+    showMenu(
+      context: context,
+      position: RelativeRect.fromRect(
+        Rect.fromPoints(
+          Offset.zero,
+          Offset(100, 100),
+        ),
+        Offset.zero & overlay.size,
+      ),
+      items: options.map((String option) {
+        return PopupMenuItem<String>(
+          value: option,
+          child: Text(option),
+        );
+      }).toList(),
+    ).then((value) {
+      // Handle menu item selection here
+      if (value != null) {
+        print('Selected option: $value');
+      }
+    });
+  }
+}
